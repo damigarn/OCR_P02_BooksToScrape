@@ -69,3 +69,10 @@ for cat, cat_url in dict_categories.items():
 
     # Relative to absolute links
     books_links = [link.replace('../../..', f"{HOME_URL}/catalogue") for link in books_links]
+
+    # Category directories for downloading data
+    cat_path = Path.cwd() / "Data" / cat
+    cat_path_images = cat_path / "Images"
+    cat_path.mkdir()
+    cat_path_images.mkdir()
+
