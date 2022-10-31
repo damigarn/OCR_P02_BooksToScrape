@@ -117,3 +117,21 @@ for cat, cat_url in dict_categories.items():
             product_description = ""
         else:
             product_description = try_descr
+
+        # Image Download
+        r_image = requests.get(image_url, stream=True)
+        img_path = cat_path_images / image_name
+        with open(img_path, mode='wb') as f:
+            shutil.copyfileobj(r_image.raw, f)
+
+        # Formatting books infos
+        book_format = [link,
+                       universal_product_code,
+                       title.title(),
+                       float(price_including_tax.lstrip("£")),
+                       float(price_excluding_tax.lstrip("£")),
+                       int(number_available.strip(" Instock(available)")),
+                       product_description,
+                       cat.capitalize(),
+                       dict_rating[review_rating],
+                       image_url.replace("../..", HOME_URL)]
