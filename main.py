@@ -135,3 +135,8 @@ for cat, cat_url in dict_categories.items():
                        cat.capitalize(),
                        dict_rating[review_rating],
                        image_url.replace("../..", HOME_URL)]
+
+        # Saving book infos to data file
+        with open(data_file, mode='a') as f:
+            csvwriter = csv.writer(f)
+            csvwriter.writerow(book_format)
