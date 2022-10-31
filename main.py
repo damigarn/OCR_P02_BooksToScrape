@@ -1,7 +1,11 @@
+from pathlib import Path
+import shutil
+
 import requests
 from bs4 import BeautifulSoup
 
 HOME_URL = "https://books.toscrape.com"
+
 
 # Home connection
 r_home = requests.get(HOME_URL)
@@ -25,3 +29,9 @@ for a in soup_home.select(".side_categories ul li ul li a"):
 # Print the number of categories
 nbCategories = len(dict_categories)
 print(f"{nbCategories} catégories trouvées.")
+
+# Target directory for database
+cat_data = Path.cwd() / "Data"
+if cat_data.exists():
+    shutil.rmtree(cat_data)
+cat_data.mkdir()
