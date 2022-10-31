@@ -4,6 +4,7 @@ import csv
 
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 HOME_URL = "https://books.toscrape.com"
 
@@ -94,3 +95,25 @@ for cat, cat_url in dict_categories.items():
         csvwriter = csv.writer(f)
         csvwriter.writerow(fields)
 
+    # Downloading data
+    for link in tqdm(books_links, ncols=100, desc="Téléchargement"):
+        # Scanning book infos
+        r_book_page = requests.get(link)
+        book_infos = BeautifulSoup(r_book_page.content, 'html.parser').find(class_="product_page")
+
+        # Book infos
+        universal_product_code = book_infos.find("table").select("td")[0].get_text(strip=True)
+        title = book_infos.find(class_="product_main").find("h1").get_text(strip=True)
+        price_including_tax = book_infos.find("table").select("td")[2].get_text(strip=True)
+        price_excluding_tax = book_infos.find("table").select("td")[3].get_text(strip=True)
+        number_available = book_infos.find("table").select("td")[5].get_text(strip=True)
+        review_rating = book_infos.find(class_="star-rating").attrs.get('class')[1]
+        image_url = book_infos.find('img')['src'].replace("../..", HOME_URL)
+        image_name = book_infos.find('img')['alt'].replace(" ", "_").replace("/", "-") + ".jpg"
+        # Description not all the time
+        try:
+            try_descr = book_infos.select("#product_description + p")[0].get_text(strip=True)
+        except IndexError:
+            product_description = ""
+        else:
+            product_description = try_descr
