@@ -1,5 +1,6 @@
 from pathlib import Path
 import shutil
+import csv
 
 import requests
 from bs4 import BeautifulSoup
@@ -75,4 +76,21 @@ for cat, cat_url in dict_categories.items():
     cat_path_images = cat_path / "Images"
     cat_path.mkdir()
     cat_path_images.mkdir()
+
+    # Category CSV data file
+    data_file = cat_path / f"{cat}.csv"
+    data_file.touch()
+    fields = ["link",
+              "universal_product_code",
+              "title",
+              "price_including_tax",
+              "price_excluding_tax",
+              "number_available",
+              "product_description",
+              "category",
+              "review_rating",
+              "image_url"]
+    with open(data_file, mode='w') as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow(fields)
 
