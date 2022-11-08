@@ -1,13 +1,13 @@
 import scraper
 
 
-# Website to scrape (Script only works with this url HOME is a constant)
+# Website to scrape (Script only works with this url so HOME is a constant)
 HOME = "https://books.toscrape.com"
 
 
 def main():
 
-    # Liste de toutes les catégories et leurs liens associés
+    # Get all categories list and associated links
     cat_list = scraper.all_categories(HOME)
 
     # Category selection
