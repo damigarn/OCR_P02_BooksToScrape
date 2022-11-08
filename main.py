@@ -1,7 +1,7 @@
 import scraper
 
 
-# Website to scrape (Script only works with this url HOME is a constant)
+# Website to scrape (Script only works with this url so HOME is a constant)
 HOME = "https://books.toscrape.com"
 
 
