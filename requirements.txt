@@ -7,3 +7,4 @@ requests==2.28.1
 soupsieve==2.3.2.post1
 tqdm==4.64.1
 urllib3==1.26.12
+terminaltables~=3.1.10
