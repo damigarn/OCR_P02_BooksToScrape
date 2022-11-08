@@ -118,7 +118,7 @@ def scraper(cat_list: list):
 
         # Books scraping
         dir_cat = DATA_DIR / cat['name']
-        for book_link in tqdm(books[1], ncols=100, desc="Téléchargement"):
+        for book_link in tqdm(books[1], ncols=100, desc="Extracting "):
             book_infos = book_scraper(cat['name'], book_link, dir_cat)
             cat_books.append(book_infos)
 
@@ -170,7 +170,7 @@ def book_scraper(cat, link, cat_dir):
     price_et = soup_table.select("td")[3].get_text(strip=True)
     stock = soup_table.select("td")[5].get_text(strip=True)
     stars = soup_book.find(class_="star-rating").attrs.get('class')[1]
-    # Description not all the time
+    # Description not present in all book pages
     try:
         try_descr = soup_book.select("#product_description + p")[0].get_text(strip=True)
     except IndexError:
@@ -237,6 +237,7 @@ def file_writer(data: dict, file_paths):
 
         file_path = file_paths[cat]
 
+        # Writing CSV fields names
         with open(file_path, mode='w') as f:
             csvwriter = csv.writer(f)
             csvwriter.writerow(fields_name)
@@ -253,12 +254,10 @@ def file_writer(data: dict, file_paths):
                            book["stars"],
                            book["img_url"]]
 
-            # Saving book infos to data file
+            # Writing book infos in data file
             with open(file_path, mode='a') as f:
                 csvwriter = csv.writer(f)
                 csvwriter.writerow(data_to_csv)
-
-        print("Data successfully saved.\n")
 
 
 def one_more():
