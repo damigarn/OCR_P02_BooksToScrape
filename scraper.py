@@ -12,7 +12,7 @@ import main
 
 CURRENT_DIR = Path.cwd()
 DATA_DIR = CURRENT_DIR / "data"
-IMAGES_DIR_NAME = "images"
+IMAGES_DIR_NAME = "img"
 
 
 def connect_status(link):
@@ -21,12 +21,13 @@ def connect_status(link):
 
     r = requests.get(link)
 
-    if r.status_code in [200, 201]:
-        return True
+    if r.status_code not in [200, 201]:
+        print(f"\nConnection to {link} is not impossible"
+              "Exiting script\n")
+        exit()
 
-    print(f"\nConnection to {link} is not impossible"
-          "Exiting script\n")
-    exit()
+    print(f"\nConnection to {main.HOME} is OK")
+    return True
 
 
 def all_categories(link):
@@ -66,8 +67,9 @@ def cat_selection(cat_list: list):
         user = input("Enter the category [index] to download it or [All] for all categories at once: ").lower()
         if user == 'all':
             return cat_list
-        elif int(user) in range(1, len(cat_list) + 1):
-            return [cat_list[int(user) - 1]]
+        elif user.isdigit():
+            if int(user) in range(1, len(cat_list) + 1):
+                return [cat_list[int(user) - 1]]
         else:
             print("Invalid input.")
 
@@ -206,8 +208,10 @@ def format_data(book_list: list):
     rating_dict = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
     # Formatting data
-    for book in tqdm(book_list, ncols=100, desc="Formatting "):
+    for book in book_list:
         setup_format(book, rating_dict)
+
+    print("Formatting : Done")
 
     return book_list
 
@@ -240,7 +244,7 @@ def file_writer(data: list, file_path):
         csvwriter = csv.writer(f)
         csvwriter.writerow(fields_name)
 
-    for book in tqdm(data, ncols=100, desc='Loading    '):
+    for book in data:
         data_to_csv = [book["link"],
                        book["upc"],
                        book["title"],
@@ -256,6 +260,8 @@ def file_writer(data: list, file_path):
         with open(file_path, mode='a') as f:
             csvwriter = csv.writer(f)
             csvwriter.writerow(data_to_csv)
+
+    print("Loading    : Done")
 
 
 def one_more():

@@ -7,6 +7,9 @@ HOME = "https://books.toscrape.com"
 
 def main():
 
+    # Connexion test
+    scraper.connect_status(HOME)
+
     # Get all categories list and associated links
     cat_list = scraper.all_categories(HOME)
 
@@ -24,6 +27,5 @@ def main():
         main()
 
 
-if __name__ == "__main__" and scraper.connect_status(HOME):
-    print(f"\nConnection to {HOME} is OK")
+if __name__ == "__main__":
     main()
