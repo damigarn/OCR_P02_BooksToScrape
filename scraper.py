@@ -102,9 +102,7 @@ def dir_manager(cat_list: list):
     return file_paths
 
 
-def scraper(cat_list: list):
-
-    scraped_data = {}
+def scraper(cat_list: list, files_paths: dict):
 
     for cat in cat_list:
 
@@ -116,15 +114,19 @@ def scraper(cat_list: list):
         # Header of each downloading bar
         print(f"\n{cat_list.index(cat) + 1 }/{len(cat_list)} - Category '{cat['name']}': {books[0]} book(s) found.")
 
-        # Books scraping
+        # ----- Extracting books data ----- #
         dir_cat = DATA_DIR / cat['name']
         for book_link in tqdm(books[1], ncols=100, desc="Extracting "):
             book_infos = book_scraper(cat['name'], book_link, dir_cat)
             cat_books.append(book_infos)
 
-        scraped_data[cat['name']] = cat_books
+        # ----- Formatting data ----- #
+        f_data = format_data(cat_books)
 
-    return scraped_data
+        # ----- Loading data to CSV file ----- #
+        file_writer(f_data, files_paths[cat['name']])
+
+        print(f"Scrape of '{cat['name']}': success\n")
 
 
 def category_scraper(cat_home):
@@ -198,16 +200,16 @@ def book_scraper(cat, link, cat_dir):
             "img_url": image_url}
 
 
-def format_data(data: dict):
+def format_data(book_list: list):
 
     # Dictionary used to transform rating from letters to numbers
     rating_dict = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
     # Formatting data
-    for books_list in data.values():
-        for book in books_list:
-            setup_format(book, rating_dict)
-    return data
+    for book in tqdm(book_list, ncols=100, desc="Formatting "):
+        setup_format(book, rating_dict)
+
+    return book_list
 
 
 def setup_format(book, rating_dict):
@@ -220,7 +222,7 @@ def setup_format(book, rating_dict):
     book["img_url"] = book["img_url"].replace("../..", main.HOME)
 
 
-def file_writer(data: dict, file_paths):
+def file_writer(data: list, file_path):
 
     fields_name = ["product_page_url",
                    "universal_product_code",
@@ -233,31 +235,27 @@ def file_writer(data: dict, file_paths):
                    "review_rating",
                    "image_url"]
 
-    for cat, value in data.items():
+    # Writing CSV fields names
+    with open(file_path, mode='w') as f:
+        csvwriter = csv.writer(f)
+        csvwriter.writerow(fields_name)
 
-        file_path = file_paths[cat]
+    for book in tqdm(data, ncols=100, desc='Loading    '):
+        data_to_csv = [book["link"],
+                       book["upc"],
+                       book["title"],
+                       book["price_it"],
+                       book["price_et"],
+                       book["stock"],
+                       book["p_descr"],
+                       book["cat"],
+                       book["stars"],
+                       book["img_url"]]
 
-        # Writing CSV fields names
-        with open(file_path, mode='w') as f:
+        # Writing book infos in data file
+        with open(file_path, mode='a') as f:
             csvwriter = csv.writer(f)
-            csvwriter.writerow(fields_name)
-
-        for book in value:
-            data_to_csv = [book["link"],
-                           book["upc"],
-                           book["title"],
-                           book["price_it"],
-                           book["price_et"],
-                           book["stock"],
-                           book["p_descr"],
-                           book["cat"],
-                           book["stars"],
-                           book["img_url"]]
-
-            # Writing book infos in data file
-            with open(file_path, mode='a') as f:
-                csvwriter = csv.writer(f)
-                csvwriter.writerow(data_to_csv)
+            csvwriter.writerow(data_to_csv)
 
 
 def one_more():

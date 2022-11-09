@@ -14,16 +14,10 @@ def main():
     cat_select = scraper.cat_selection(cat_list)
 
     # Creation of directories and files to store data
-    data_files = scraper.dir_manager(cat_select)
+    files_paths = scraper.dir_manager(cat_select)
 
-    # Extracting data
-    data = scraper.scraper(cat_select)
-
-    # Formatting data
-    f_data = scraper.format_data(data)
-
-    # Loading data
-    scraper.file_writer(f_data, data_files)
+    # Scraping
+    scraper.scraper(cat_select, files_paths)
 
     # Another extraction ?
     if scraper.one_more():
