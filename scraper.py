@@ -212,7 +212,7 @@ def format_data(book_list: list):
     return book_list
 
 
-def setup_format(book, rating_dict):
+def setup_format(book: dict, rating_dict: dict):
     book["title"] = book["title"].title()
     book["price_it"] = float(book["price_it"].lstrip("£"))
     book["price_et"] = float(book["price_et"].lstrip("£"))
