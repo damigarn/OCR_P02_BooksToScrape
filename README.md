@@ -11,7 +11,7 @@
 
 1. [Windows](#id-section1)
 2. [MacOS et Linux](#id-section2)
-3. [Exemples d'affichage](#section3)
+3. [Exemples d'affichage](#id-section3)
 
 <div id='id-section1'></div>
 
